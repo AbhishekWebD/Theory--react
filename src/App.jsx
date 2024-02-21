@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { List } from './List';
 import { Readmore } from './Readmore';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { MyContext } from './components/MyContext';
 import { Comp1 } from './components/Comp1';
 import { Comp4 } from './components/Comp4';
@@ -13,15 +13,18 @@ import { Comp2 } from './components/Comp2';
 import { Comp3 } from './components/Comp3';
 import { Counter1 } from './components/Counter1';
 import { Counter2 } from './components/Counter2';
-import useTheme  from './Hooks/useTheme';
-
+import useTheme from './Hooks/useTheme';
+import ChildCb from './components/ChildCb';
 
 function App() {
   const [count, setCount] = useState(0)
   const [value, setvalue] = useState("Abhishek")
   const [isvisible, setVisible] = useState(true)
   const [isDisable, setDisable] = useState(true)
-  const { theme, switchTheme } =useTheme()
+  const { theme, switchTheme } = useTheme()
+  const [memoadd,setmemoadd] =useState(0)
+  const [memosub,setmemosub]= useState(100)
+
   // const [ text, SetText] = useState("Login")
   const refInput = useRef()
 
@@ -47,8 +50,17 @@ function App() {
   //   SetText("")
   //   refInput.current.focus()
   // }
-  useEffect(()=>{ document.body.style.backgroundColor= theme})
+  useEffect(() => { document.body.style.backgroundColor = theme })
 
+// ***********************Use Memo & useCallback******************
+const multi = useMemo(function multiply(){
+  console.log("multiply caling")
+  return memoadd*1000
+},[memoadd])
+
+const Cb = useCallback(()=>{
+console.log("use callback")
+},[memosub])
   return (
     <>
       {/* {isvisible ? <Readmore 
@@ -97,13 +109,23 @@ function App() {
       <button onClick={reset}>Reset</button> */}
 
 
-{/* ******************* useCount *************** */}
-{/* <Counter1></Counter1>
+      {/* ******************* useCount *************** */}
+      {/* <Counter1></Counter1>
 <Counter2></Counter2> */}
 
 
-{/* **********************useTheme***************** */}
-<button type='button' onClick={switchTheme}>SwitchTheme</button>
+      {/* **********************useTheme***************** */}
+      <button type='button' onClick={switchTheme}>SwitchTheme</button>
+      <hr />
+
+    
+{/* ************************Use Memo****************** */}
+<ChildCb Cb={Cb} />
+<h1>{memoadd}</h1>
+<h1>{multi}</h1>
+<button onClick={()=>setmemoadd(memoadd +1)}>Add</button>
+<h1>{memosub}</h1>
+<button onClick={()=>setmemosub(memosub -1)}>Substract</button>
 
     </>
   )
